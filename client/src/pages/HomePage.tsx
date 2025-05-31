@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
 import "./HomePage.css"; // 引入自定义样式
 const HomePage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -91,12 +90,12 @@ const HomePage = () => {
             margin: "0 auto",
           }}
         >
-          <div style={{ flex: 1 }}>
-            <img
-              src="//custom-images.strikinglycdn.com/res/hrscywv4p/image/upload/c_limit,fl_lossy,h_9000,w_1200,f_auto,q_auto/8643682/365730_568378.png"
-              alt="223"
-              style={{ width: "100%", maxWidth: "573px" }}
-            />
+          <div className="image-card" style={{ flex: 1 }}>
+            <div className="image-container">
+              <a href="/about">
+                <img src="homeimage1.jpg" alt="223" />
+              </a>
+            </div>
           </div>
           <div style={{ flex: 1, paddingLeft: "40px" }}>
             <h1 className="upline">我是223</h1>
@@ -121,12 +120,12 @@ const HomePage = () => {
               <p className="herfstyle">SHOP PERSETS</p>
             </a>
           </div>
-          <div style={{ flex: 1 }}>
-            <img
-              src="homeimage2.png"
-              alt="lightroom"
-              style={{ width: "100%", maxWidth: "573px" }}
-            />
+          <div className="image-card" style={{ flex: 1 }}>
+            <div className="image-container">
+              <a href="https://www.jjjason.com/lightroom">
+                <img src="homeimage2.png" alt="lightroom" />
+              </a>
+            </div>
           </div>
         </section>
 
@@ -139,18 +138,18 @@ const HomePage = () => {
             margin: "0 auto",
           }}
         >
-          <div style={{ flex: 1 }}>
-            <img
-              src="homeimage3.png"
-              alt="3"
-              style={{ width: "100%", maxWidth: "573px" }}
-            />
+          <div className="image-card" style={{ flex: 1 }}>
+            <div className="image-container">
+              <a href="https://www.ysjf.com/material">
+                <img src="homeimage3.png" alt="3" />
+              </a>
+            </div>
           </div>
           <div style={{ flex: 1, paddingLeft: "40px" }}>
             <h1 className="upline">影片调色档</h1>
             <p className="downline">怎么样都调不出理想的颜色？</p>
             <p className="downline">你可以试试看这个</p>
-            <a href="https://www.jjjason.com/4">
+            <a href="https://www.ysjf.com/material">
               <p className="herfstyle">SHOP PERSETS</p>
             </a>
           </div>
@@ -176,19 +175,9 @@ const HomePage = () => {
           >
             {/* WORK 区块 - 在上方 */}
             <div style={{ width: "100%" }}>
-              <h2
-                style={{
-                  fontSize: "2rem",
-                  fontWeight: "bold",
-                  marginBottom: "30px",
-                  textAlign: "center",
-                  textDecoration: "underline",
-                  textDecorationThickness: "2px",
-                  textDecorationSkipInk: "auto",
-                }}
-              >
-                WORK
-              </h2>
+              <a href="/works">
+                <h2 className="herfstyle1">WORK</h2>
+              </a>
               <div
                 style={{
                   display: "grid",
@@ -220,22 +209,43 @@ const HomePage = () => {
                 alignItems: "center", // 内容居中
               }}
             >
-              <h2
-                style={{
-                  fontSize: "2rem",
-                  fontWeight: "bold",
-                  textAlign: "center", // 居中标题
-                }}
-              >
-                CONTACT
-              </h2>
+              <a href="/contact">
+                <h2 className="herfstyle1">CONTACT</h2>
+              </a>
               <div
                 style={{
                   display: "flex",
                   gap: "10px", // 增加图标间距
                 }}
               >
-                {/* Instagram 图标 */}
+                {/* Bilibili 图标 */}
+                <a
+                  href="https://space.bilibili.com/1663704071?spm_id_from=333.1007.0.0"
+                  style={{ display: "block" }}
+                >
+                  <img
+                    className="iconstyle"
+                    src="bilibili.png"
+                    alt="bilibili"
+                  />
+                </a>
+                {/* github 图标 */}
+                <a
+                  href="https://github.com/223nobody"
+                  style={{ display: "block" }}
+                >
+                  <img
+                    className="iconstyle"
+                    style={{
+                      backgroundColor: "#fff",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                    src="github.png"
+                    alt="github"
+                  />
+                </a>
+                {/* ins 图标 */}
                 <a
                   href="https://www.instagram.com"
                   style={{ display: "block" }}

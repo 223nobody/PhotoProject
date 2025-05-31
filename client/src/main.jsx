@@ -6,6 +6,7 @@ import HomePage from "./pages/HomePage";
 import WorkPage from "./pages/WorkPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import CollectionPage from "./pages/CollectionPage";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/works" element={<WorkPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/works/type" element={<CollectionPage />} />
       </Routes>
     </BrowserRouter>
   );

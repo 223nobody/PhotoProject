@@ -1,0 +1,245 @@
+.hstyle {
+  text-align: center;
+  font-size: 2.2rem; /* 移除引号 */
+  font-weight: bold;
+  margin-bottom: 40px;
+  text-transform: capitalize; /* 移除引号 */
+}
+
+/* === 模态框样式 === */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8); /* 半透明深色背景 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  width: 100%;
+  height: 95%; /* 修改为 100% 以铺满屏幕 */
+  background-color: rgba(0, 0, 0, 0.35); /* 深色半透明背景 */
+  border-radius: 0; /* 移除圆角 */
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.8);
+  position: relative;
+  z-index: 1001;
+  border: none; /* 移除边框 */
+}
+
+/* 顶部浏览器栏 */
+.fake-browser-bar {
+  padding: 10px 15px;
+  background-color: rgba(30, 30, 30, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1002;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  border-top-left-radius: 0; /* 移除圆角 */
+  border-top-right-radius: 0; /* 移除圆角 */
+}
+
+.fake-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.fake-tab {
+  padding: 8px 15px;
+  background-color: rgba(50, 50, 50, 0.8);
+  border-radius: 6px;
+  font-size: 13px;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
+}
+
+.fake-tab.active {
+  background-color: rgba(70, 70, 70, 0.9);
+  color: white;
+  font-weight: 500;
+}
+
+/* 主内容区 */
+.main-content {
+  display: flex;
+  height: 90vh; /* 修改为 90vh 以确保内容有足够空间 */
+  padding: 10px 0;
+}
+
+.preview {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.preview:hover {
+  opacity: 0.9;
+}
+
+.preview img {
+  width: 80%;
+  height: 80%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.blurred {
+  filter: blur(4px);
+  opacity: 0.8;
+}
+
+.preview-label {
+  position: absolute;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 4px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* 主图区域 */
+.main-image-container {
+  flex: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.main-image {
+  max-width: 95%;
+  max-height: 95%;
+  border-radius: 5px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease;
+}
+
+/* 底部导航 */
+.navigation-indicators {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 10px;
+  background-color: rgba(30, 30, 30, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom-left-radius: 0; /* 移除圆角 */
+  border-bottom-right-radius: 0; /* 移除圆角 */
+}
+
+.nav-counter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.counter-number {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.counter-label {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.nav-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  background-color: white;
+  transform: scale(1.2);
+}
+
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.close-button:hover {
+  background: rgba(200, 0, 0, 0.8);
+  color: white;
+  transform: scale(1.1);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .modal-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .preview {
+    width: 25%;
+  }
+
+  .preview-label {
+    font-size: 14px;
+  }
+
+  .nav-counter {
+    display: none;
+  }
+
+  .nav-counter-mobile {
+    display: block;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .close-button {
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+  }
+}

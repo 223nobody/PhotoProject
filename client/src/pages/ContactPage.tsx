@@ -109,26 +109,22 @@ const ContactPage = () => {
         </ul>
       </nav>
 
-      <div style={{ paddingTop: isScrolled ? "200px" : "300px" }}>
-        <div
+      <div style={{ paddingTop: isScrolled ? "100px" : "150px" }}>
+        <h1
           style={{
-            textAlign: "center", // 文本居中
+            textAlign: "center",
+            marginBottom: 60,
+            fontFamily: '"Cormorant SC", serif',
           }}
         >
-          <p>电话: +86 15972901567</p>
-          <p style={{ marginTop: "10px" }}>邮箱: byfukun@foxmail.com</p>
-        </div>
-        {/* 版权信息 - 新增 */}
-        <div className="copyright" style={{ color: "#000" }}>
-          ©2025 - 223nobody
-        </div>
+          Contact
+        </h1>
 
         <div
           style={{
             justifyContent: "center", // 图标居中
             display: "flex",
             gap: "20px", // 增加图标间距
-            marginTop: "50px", // 增加顶部间距
           }}
         >
           {/* Bilibili 图标 */}
@@ -138,7 +134,7 @@ const ContactPage = () => {
           >
             <img
               className="iconstyle"
-              src="bilibili2.png"
+              src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/bilibili2.png"
               alt="bilibili"
               style={{ borderRadius: "20%" }}
             />
@@ -149,7 +145,11 @@ const ContactPage = () => {
             style={{ cursor: "pointer", position: "relative" }}
             onClick={() => setShowWechatQR(true)}
           >
-            <img className="iconstyle" src="weixin.png" alt="weixin" />
+            <img
+              className="iconstyle"
+              src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/weixin.png"
+              alt="weixin"
+            />
           </div>
 
           {/* QQ图标 - 添加点击事件 */}
@@ -157,7 +157,11 @@ const ContactPage = () => {
             style={{ cursor: "pointer", position: "relative" }}
             onClick={() => setShowQQQR(true)}
           >
-            <img className="iconstyle" src="qq.png" alt="qq" />
+            <img
+              className="iconstyle"
+              src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/qq.png"
+              alt="qq"
+            />
           </div>
         </div>
       </div>
@@ -169,7 +173,7 @@ const ContactPage = () => {
             <h3 style={{ marginBottom: "15px" }}>微信二维码</h3>
             <div className="QRstyle">
               <img
-                src="weixinQR.png"
+                src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/weixinQR.png"
                 alt="微信二维码"
                 style={{ width: "100%", height: "100%", objectFit: "contain" }}
               />
@@ -194,7 +198,7 @@ const ContactPage = () => {
             <h3 style={{ marginBottom: "15px" }}>QQ二维码</h3>
             <div className="QRstyle">
               <img
-                src="qqQR.jpg"
+                src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/qqQR.jpg"
                 alt="qq二维码"
                 style={{ width: "100%", height: "100%", objectFit: "contain" }}
               />
@@ -208,6 +212,20 @@ const ContactPage = () => {
           </div>
         </div>
       )}
+
+      <div
+        style={{
+          textAlign: "center", // 文本居中
+          marginTop: "50px", // 增加顶部间距
+        }}
+      >
+        <p>电话: +86 15972901567</p>
+        <p style={{ marginTop: "10px" }}>邮箱: byfukun@foxmail.com</p>
+      </div>
+      {/* 版权信息 - 新增 */}
+      <div className="copyright" style={{ color: "#000" }}>
+        ©2025 - 223nobody
+      </div>
 
       <div style={{ overflow: "auto" }}></div>
     </div>

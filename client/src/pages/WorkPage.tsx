@@ -4,8 +4,64 @@ import "./HomePage.css"; // 引入自定义样式
 import "./WorkPage.css"; // 引入联系页面样式
 const WorkPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [photos, setPhotos] = useState<
+    { id: number; url: string; description: string; type: number }[]
+  >([]); // 定义 photos 状态
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const intervalRef = useRef<number | null>(null);
   const purchase = 0;
+
+  const photos1 = [
+    {
+      id: 1,
+      url: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/masterpiece/2025%E6%98%A5%E8%8A%82/R0013958.jpg",
+      description: "25chunjie",
+      type: "2",
+    },
+    {
+      id: 2,
+      url: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/masterpiece/24-10-15/R0013766.jpg",
+      description: "daily",
+      type: "2",
+    },
+    {
+      id: 3,
+      url: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/masterpiece/%E6%AD%A6%E5%BD%93/R0013695.jpg",
+      description: "wudang",
+      type: "2",
+    },
+  ];
+
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      let apiUrl = "/api/stats/random/10";
+
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`请求失败: ${response.status}`);
+      }
+      const result = await response.json();
+      setPhotos(
+        result.data.map((photo) => ({
+          id: photo.id,
+          url: photo.url, // 后端返回的是 "url"
+          description: photo.description,
+          type: photo.type,
+        }))
+      );
+    } catch (error) {
+      console.error("获取照片失败:", error);
+      // 可以根据需要处理错误（例如显示错误消息）
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
+    fetchStats();
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -15,18 +71,6 @@ const WorkPage = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  const photos = [
-    { id: 1, image: "bilibili.png", type: "风景摄影" },
-    { id: 2, image: "bilibili2.png", type: "风景摄影" },
-    { id: 3, image: "bilibili.png", type: "风景摄影" },
-    { id: 4, image: "bilibili2.png", type: "风景摄影" },
-    { id: 5, image: "bilibili.png", type: "风景摄影" },
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const intervalRef = useRef<number | null>(null);
 
   // 自动播放 - 1秒切换一次
   useEffect(() => {
@@ -59,7 +103,12 @@ const WorkPage = () => {
   return (
     <div
       className="s-content s-font-body-gotham-rounded"
-      style={{ backgroundColor: "#fff" }}
+      style={{
+        backgroundColor: "#fff",
+        position: "relative",
+        minHeight: "100vh",
+        paddingBottom: "100px", // 为版权信息预留空间
+      }}
     >
       {/* 设置页面标题 */}
       <Helmet>
@@ -125,103 +174,140 @@ const WorkPage = () => {
       </nav>
 
       {/* 内容部分 - 添加顶部内边距以避免被固定导航栏遮挡 */}
-      <div style={{ paddingTop: isScrolled ? "200px" : "300px" }}></div>
-      <section>
-        <h1 style={{ textAlign: "center", marginBottom: 40 }}>Recommend</h1>
-
-        <div
-          className="auto-carousel"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {/* 上一张按钮 */}
-          <button
-            className="nav-btn prev-btn"
-            onClick={goToPrevious}
-            aria-label="Previous photo"
+      <div style={{ flex: 1 }}>
+        <div style={{ paddingTop: isScrolled ? "200px" : "300px" }}></div>
+        <section>
+          <h1
+            style={{
+              textAlign: "center",
+              marginBottom: 40,
+              fontSize: "2em",
+              fontFamily: '"Cormorant SC", serif',
+            }}
           >
-            &lt;
-          </button>
+            Recommend
+          </h1>
 
-          {/* 轮播内容 */}
-          <div className="carousel-track">
-            {photos.map((photo, index) => (
-              <div
-                key={photo.id}
-                className={`carousel-slide ${
-                  index === currentIndex ? "active" : ""
-                }`}
-                style={{ backgroundImage: `url(${photo.image})` }}
-              />
-            ))}
+          <div
+            className="auto-carousel"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            {/* 上一张按钮 */}
+            <button
+              className="nav-btn prev-btn"
+              onClick={goToPrevious}
+              aria-label="Previous photo"
+            >
+              &lt;
+            </button>
+
+            {/* 轮播内容 */}
+            <div className="carousel-track">
+              {photos.map((photo, index) => (
+                <div
+                  key={photo.id}
+                  className={`carousel-slide ${
+                    index === currentIndex ? "active" : ""
+                  }`}
+                  style={{ backgroundImage: `url(${photo.url})` }}
+                />
+              ))}
+            </div>
+
+            {/* 下一张按钮 */}
+            <button
+              className="nav-btn next-btn"
+              onClick={goToNext}
+              aria-label="Next photo"
+            >
+              &gt;
+            </button>
           </div>
-
-          {/* 下一张按钮 */}
-          <button
-            className="nav-btn next-btn"
-            onClick={goToNext}
-            aria-label="Next photo"
-          >
-            &gt;
-          </button>
-        </div>
-      </section>
-      <h1 style={{ textAlign: "center", marginTop: 100 }}>Photo Collection</h1>
-      <section
-        style={{
-          display: "flex",
-          alignItems: "center",
-          padding: "0px 20px",
-          maxWidth: "1200px",
-          margin: "0 auto",
-        }}
-      >
-        <div
+        </section>
+        <h1
           style={{
-            display: "flex",
-            flexWrap: "nowrap", // 确保不换行
-            gap: "15px", // 图片间距
-            minWidth: "100%", // 确保容器足够宽
-            padding: "10px",
-            justifyContent: "center", // 居中对齐
+            textAlign: "center",
+            marginTop: 80,
+            fontFamily: '"Cormorant SC", serif',
           }}
         >
-          {photos.map((photo) => (
-            <div key={photo.id} style={{ flex: 1 }}>
-              <div
-                className="image-container"
-                style={{
-                  flex: "0 0 auto", // 防止图片被压缩
-                  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-                  transition: "transform 0.3s ease",
-                  width: "400px", // 固定宽度
-                  height: "500px", // 固定高度
-                }}
-              >
-                <a href="/works/type">
-                  <img
-                    src={photo.image}
-                    alt={`Photo ${photo.id}`}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover", // 保持比例，填充容器
-                      display: "block",
-                    }}
-                  />
-                </a>
+          Photo Collection
+        </h1>
+        <section
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "0px 20px",
+            maxWidth: "1200px",
+            margin: "0 auto",
+            marginTop: 40, // 添加顶部间距
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "nowrap", // 确保不换行
+              gap: "15px", // 图片间距
+              minWidth: "100%", // 确保容器足够宽
+              padding: "10px",
+              justifyContent: "center", // 居中对齐
+            }}
+          >
+            {photos1.map((photo) => (
+              <div key={photo.id} style={{ flex: 1 }}>
+                <div
+                  className="image-container"
+                  style={{
+                    flex: "0 0 auto", // 防止图片被压缩
+                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+                    transition: "transform 0.3s ease",
+                    height: "500px", // 设置固定高度
+                    width: "360px", // 设置宽度为100%
+                  }}
+                >
+                  <a href={`/works/${photo.description}`}>
+                    <img
+                      src={photo.url}
+                      alt={`Photo ${photo.id}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover", // 保持比例，填充容器
+                        display: "block",
+                      }}
+                    />
+                  </a>
+                </div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    marginTop: "20px",
+                  }}
+                >
+                  {photo.description === "wudang" ? (
+                    <p className="downline3">武当山系列</p>
+                  ) : photo.description === "25chunjie" ? (
+                    <p className="downline3">春节系列</p>
+                  ) : (
+                    <p className="downline3">日常系列</p>
+                  )}
+                </div>
               </div>
-              <div style={{ textAlign: "center", marginTop: "20px" }}>
-                <p className="downline">{photo.type}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
+        </section>
+        {/* 版权信息 - 新增 */}
+        <div
+          className="copyright"
+          style={{
+            padding: "15px 0",
+            marginTop: "100px",
+            color: "#000",
+          }}
+        >
+          ©2025 - 223nobody
         </div>
-      </section>
-
-      {/* 版权信息 - 新增 */}
-      <div className="copyright" style={{ marginTop: 100, color: "#000" }}>
-        ©2025 - 223nobody
       </div>
 
       <div style={{ overflow: "auto" }}></div>

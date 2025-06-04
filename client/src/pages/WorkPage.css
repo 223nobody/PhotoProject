@@ -1,7 +1,7 @@
 /* Carousel.css */
 .auto-carousel {
-  width: 80%;
-  height: 60vh;
+  width: 60%;
+  height: 80vh;
   overflow: hidden;
   position: relative;
   display: flex;
@@ -105,4 +105,13 @@
     height: 40px;
     font-size: 20px;
   }
+}
+
+.downline3 {
+  color: #000;
+  display: flex;
+  flex-direction: column;
+  font-size: 24px;
+  font-family: "中易宋体", "SimSun", serif;
+  font-weight: 700;
 }

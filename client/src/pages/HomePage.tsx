@@ -2,9 +2,41 @@ import React, { useState, useEffect } from "react";
 import "./HomePage.css"; // 引入自定义样式
 const HomePage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [photos, setPhotos] = useState<
+    { id: number; url: string; description: string; type: number }[]
+  >([]); // 定义 photos 状态
   const purchase = 0;
 
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      let apiUrl = "/api/stats/random/4";
+
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`请求失败: ${response.status}`);
+      }
+      const result = await response.json();
+      setPhotos(
+        result.data.map((photo) => ({
+          id: photo.id,
+          url: photo.url, // 后端返回的是 "url"
+          description: photo.description,
+          type: photo.type,
+        }))
+      );
+    } catch (error) {
+      console.error("获取照片失败:", error);
+      // 可以根据需要处理错误（例如显示错误消息）
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
+    fetchStats();
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
@@ -93,7 +125,10 @@ const HomePage = () => {
           <div className="image-card" style={{ flex: 1 }}>
             <div className="image-container">
               <a href="/about">
-                <img src="homeimage1.jpg" alt="223" />
+                <img
+                  src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage1.jpg"
+                  alt="223"
+                />
               </a>
             </div>
           </div>
@@ -123,7 +158,10 @@ const HomePage = () => {
           <div className="image-card" style={{ flex: 1 }}>
             <div className="image-container">
               <a href="https://www.jjjason.com/lightroom">
-                <img src="homeimage2.png" alt="lightroom" />
+                <img
+                  src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage2.png"
+                  alt="lightroom"
+                />
               </a>
             </div>
           </div>
@@ -141,7 +179,10 @@ const HomePage = () => {
           <div className="image-card" style={{ flex: 1 }}>
             <div className="image-container">
               <a href="https://www.ysjf.com/material">
-                <img src="homeimage3.png" alt="3" />
+                <img
+                  src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage3.png"
+                  alt="3"
+                />
               </a>
             </div>
           </div>
@@ -180,24 +221,61 @@ const HomePage = () => {
               </a>
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(2, 1fr)", // 两列网格
-                  gap: "20px",
-                  maxWidth: "600px", // 限制宽度
-                  margin: "0 auto", // 居中
+                  display: "flex", // 改为flex布局
+                  flexWrap: "wrap", // 允许换行
+                  justifyContent: "center", // 居中对齐
+                  gap: "30px",
+                  width: "100%",
                 }}
               >
-                {[1, 2, 3, 4].map((item) => (
+                {photos.map((photo) => (
                   <div
-                    key={item}
+                    key={photo.id}
                     style={{
-                      height: "200px", // 增加高度
-                      backgroundColor: "rgba(255, 255, 255, 0.1)", // 半透明白色
-                      borderRadius: "4px",
+                      height: "300px", // 增加高度
+                      width: "400px", // 设置宽度
+                      borderRadius: "10px",
                     }}
-                  ></div>
+                  >
+                    <img
+                      src={photo.url}
+                      alt={`Photo ${photo.id}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover", // 保持比例，填充容器
+                        display: "block",
+                      }}
+                    />
+                  </div>
                 ))}
               </div>
+            </div>
+
+            {/* 新增视频部分 */}
+            <div style={{ width: "100%", marginTop: "40px" }}>
+              <a href="https://www.bilibili.com/video/BV1qZqPYgEtc/?spm_id_from=333.1387.homepage.video_card.click">
+                <h2 className="herfstyle1">LATEST PROJECT</h2>
+              </a>
+
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <video
+                  controls
+                  width="800"
+                  height="450"
+                  poster="
+https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/poster.jpg"
+                >
+                  <source
+                    src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/workvideo.mp4"
+                    type="video/mp4"
+                  />
+                  抱歉，您的浏览器不支持视频播放。
+                </video>
+              </div>
+              <p style={{ textAlign: "center", marginTop: "20px" }}>
+                看看我最新的摄影集锦
+              </p>
             </div>
 
             {/* CONTACT 区块 - 在下方 */}
@@ -225,7 +303,7 @@ const HomePage = () => {
                 >
                   <img
                     className="iconstyle"
-                    src="bilibili.png"
+                    src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/bilibili.png"
                     alt="bilibili"
                   />
                 </a>
@@ -241,7 +319,7 @@ const HomePage = () => {
                       backgroundSize: "cover",
                       backgroundPosition: "center",
                     }}
-                    src="github.png"
+                    src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/github.png"
                     alt="github"
                   />
                 </a>
@@ -252,20 +330,25 @@ const HomePage = () => {
                 >
                   <img
                     className="iconstyle"
-                    src="instagram.png"
+                    src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/instagram.png"
                     alt="instagram"
                   />
                 </a>
 
                 {/* YouTube 图标 */}
                 <a href="https://youtube.com" style={{ display: "block" }}>
-                  <img className="iconstyle" src="youtube.png" alt="youtube" />
+                  <img
+                    className="iconstyle"
+                    src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/youtube.png"
+                    alt="youtube"
+                  />
                 </a>
               </div>
 
               <div
                 style={{
                   textAlign: "center", // 文本居中
+                  marginTop: "30px", // 增加顶部间距
                 }}
               >
                 <p>电话: +86 15972901567</p>

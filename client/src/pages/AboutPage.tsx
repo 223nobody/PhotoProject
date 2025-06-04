@@ -6,12 +6,36 @@ const AboutPage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const purchase = 0;
   const brands = [
-    { id: 1, name: "BenQ", img: "../brands/benu.png" },
-    { id: 2, name: "Canon", img: "../brands/canon.png" },
-    { id: 3, name: "SONY", img: "../brands/sony.png" },
-    { id: 4, name: "Leica", img: "../brands/leica.png" },
-    { id: 5, name: "DJI", img: "../brands/dji.png" },
-    { id: 6, name: "HasselBlad", img: "../brands/hasselblad.png" },
+    {
+      id: 1,
+      name: "BenQ",
+      img: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/benu.png",
+    },
+    {
+      id: 2,
+      name: "Canon",
+      img: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/canon.png",
+    },
+    {
+      id: 3,
+      name: "SONY",
+      img: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/sony.png",
+    },
+    {
+      id: 4,
+      name: "Leica",
+      img: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/leica.png",
+    },
+    {
+      id: 5,
+      name: "DJI",
+      img: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/dji.png",
+    },
+    {
+      id: 6,
+      name: "HasselBlad",
+      img: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/hasselblad.png",
+    },
   ];
 
   useEffect(() => {
@@ -98,7 +122,15 @@ const AboutPage = () => {
 
       {/* 内容部分 - 添加顶部内边距以避免被固定导航栏遮挡 */}
       <div style={{ paddingTop: isScrolled ? "200px" : "200px" }}>
-        <h1 style={{ textAlign: "center", marginBottom: 20 }}>About</h1>
+        <h1
+          style={{
+            textAlign: "center",
+            marginBottom: 20,
+            fontFamily: '"Cormorant SC", serif',
+          }}
+        >
+          About
+        </h1>
         <section
           style={{
             display: "flex",
@@ -110,37 +142,39 @@ const AboutPage = () => {
         >
           <div style={{ flex: 1 }}>
             <img
-              src="homeimage1.jpg"
+              src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage1.jpg"
               alt="223"
               style={{ width: "100%", maxWidth: "573px" }}
             />
           </div>
           <div style={{ flex: 1, paddingLeft: "40px" }}>
-            <h1 className="upline">Hi, I'm 223</h1>
-            <p className="downline1">
+            <h1 className="upline" style={{ fontFamily: '"Playball", serif' }}>
+              Hi, I'm 223
+            </h1>
+            <p className="downline1" style={{ fontFamily: "gotham rounded" }}>
               I'm a freelance photographer/ videographer based in WuHan, China.
             </p>
-            <p className="downline1">
+            <p className="downline1" style={{ fontFamily: "gotham rounded" }}>
               With a passion for both photography and videography, I specialize
               in helping brands to get more exposure and reach more customers
               through videos and photos.
             </p>
-            <p className="downline1">
+            <p className="downline1" style={{ fontFamily: "gotham rounded" }}>
               I've been fortunate to work with many of the world's top brands
               such as Sony, Canon, Google, BenQ, Msi, Weider, and more.
             </p>
-            <p className="downline2" style={{ marginTop: 40 }}>
+            <p className="downline1" style={{ marginTop: 40 }}>
               嗨! 我是223
             </p>
-            <p className="downline2">我是来自武汉的一名摄影爱好者。</p>
-            <p className="downline2">
+            <p className="downline1">我是来自武汉的一名摄影爱好者。</p>
+            <p className="downline1">
               秉持着对影像的热情,
-              我负责利用照片和影片协助品牌建立形象以及取得更多的曝机会,并且更被大众所认知。
+              我负责利用照片和影片协助品牌建立形象以及取得更多的曝光机会,并且更被大众所认知。
             </p>
-            <p className="downline2">
+            <p className="downline1">
               我也非常荣幸和一些世界上顶尖的品牌合作。
             </p>
-            <p className="downline2">
+            <p className="downline1">
               例如: Sony, Canon, Lecia, BenQ, HasselBlad, Weider, SYM等等...
             </p>
           </div>

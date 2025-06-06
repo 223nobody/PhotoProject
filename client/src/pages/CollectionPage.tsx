@@ -4,6 +4,43 @@ import { useParams } from "react-router-dom";
 import "./HomePage.css";
 import "./CollectionPage.css";
 
+interface Photo {
+  id: number;
+  url: string;
+  type: number;
+  displayUrl: string;
+  originalUrl: string;
+}
+// 增强图片组件，支持加载失败时使用原始URL重试
+const EnhancedImage = ({ primarySrc, fallbackSrc, alt, className, style }) => {
+  const [src, setSrc] = useState(primarySrc);
+  const [errorOccurred, setErrorOccurred] = useState(false);
+
+  useEffect(() => {
+    setSrc(primarySrc);
+    setErrorOccurred(false);
+  }, [primarySrc]);
+
+  const handleError = () => {
+    // 如果有备用URL且未使用过，则切换为备用URL
+    if (!errorOccurred && fallbackSrc && fallbackSrc !== primarySrc) {
+      setSrc(fallbackSrc);
+      setErrorOccurred(true);
+    }
+  };
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      style={style}
+      onError={handleError}
+    />
+  );
+};
+
+// 图片详情模态框组件
 const PhotoDetailModal = ({ photo, photos, currentIndex, onClose }) => {
   const [currentIndexState, setCurrentIndexState] = useState(currentIndex);
   const [zoomLevel, setZoomLevel] = useState(1);
@@ -46,8 +83,8 @@ const PhotoDetailModal = ({ photo, photos, currentIndex, onClose }) => {
           {/* 左侧预览图 */}
           {photos.length > 1 && (
             <div className="preview prev" onClick={prevPhoto}>
-              <img
-                src={
+              <EnhancedImage
+                primarySrc={
                   photos[
                     (currentIndexState - 1 + photos.length) % photos.length
                   ].url
@@ -61,8 +98,8 @@ const PhotoDetailModal = ({ photo, photos, currentIndex, onClose }) => {
 
           {/* 主图展示 */}
           <div className="main-image-container" onClick={handleZoom}>
-            <img
-              src={currentPhoto.url}
+            <EnhancedImage
+              primarySrc={currentPhoto.url}
               alt={currentPhoto.description}
               className="main-image"
               style={{
@@ -75,8 +112,8 @@ const PhotoDetailModal = ({ photo, photos, currentIndex, onClose }) => {
           {/* 右侧预览图 */}
           {photos.length > 1 && (
             <div className="preview next" onClick={nextPhoto}>
-              <img
-                src={photos[(currentIndexState + 1) % photos.length].url}
+              <EnhancedImage
+                primarySrc={photos[(currentIndexState + 1) % photos.length].url}
                 alt="预览"
                 className="blurred"
               />
@@ -155,18 +192,45 @@ const CollectionPage = () => {
       const result1 = await response1.json();
       const result2 = await response2.json();
 
+      // 添加质量参数函数
+      const addQualityParam = (url) => {
+        if (url.includes("?")) {
+          return `${url}&x-oss-process=image/quality,q_85`;
+        } else {
+          return `${url}?x-oss-process=image/quality,q_85`;
+        }
+      };
+
+      // 为每个照片添加原始URL和显示URL
+      const processedPhotos1 = (result1.data?.photos || []).map((photo) => ({
+        ...photo,
+        displayUrl: addQualityParam(photo.url), // 添加质量参数的URL用于列表显示
+        originalUrl: photo.url, // 保留原始URL
+      }));
+
+      const processedPhotos2 = (result2.data?.photos || []).map((photo) => ({
+        ...photo,
+        displayUrl: addQualityParam(photo.url), // 添加质量参数的URL用于列表显示
+        originalUrl: photo.url, // 保留原始URL
+      }));
       // 存储照片数据和总数
-      setPhotos1(result1.data?.photos || []);
-      setPhotos2(result2.data?.photos || []);
+      setPhotos1(processedPhotos1);
+      setPhotos2(processedPhotos2);
       setTotalLandscapes(result1.data?.total || 0);
       setTotalPortraits(result2.data?.total || 0);
 
-      // 组合所有照片用于模态框
+      // 组合所有照片用于模态框（使用原始URL）
       setAllPhotos([
-        ...(result2.data?.photos || []),
-        ...(result1.data?.photos || []),
+        ...(processedPhotos2.map((p: Photo) => ({
+          ...p,
+          url: p.originalUrl,
+        })) || []),
+        ...(processedPhotos1.map((p: Photo) => ({
+          ...p,
+          url: p.originalUrl,
+        })) || []),
       ]);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("获取照片失败:", error);
     } finally {
       setLoading(false);
@@ -266,8 +330,9 @@ const CollectionPage = () => {
               }}
               onClick={() => handlePhotoClick(photo.id, 2)}
             >
-              <img
-                src={photo.url}
+              <EnhancedImage
+                primarySrc={photo.displayUrl} // 使用带质量参数的URL
+                fallbackSrc={photo.originalUrl} // 当失败时使用原始URL
                 alt={`Photo ${photo.id}`}
                 style={{
                   width: "100%",
@@ -311,8 +376,9 @@ const CollectionPage = () => {
               }}
               onClick={() => handlePhotoClick(photo.id, 1)}
             >
-              <img
-                src={photo.url}
+              <EnhancedImage
+                primarySrc={photo.displayUrl} // 使用带质量参数的URL
+                fallbackSrc={photo.originalUrl} // 当失败时使用原始URL
                 alt={`Photo ${photo.id}`}
                 style={{
                   width: "100%",

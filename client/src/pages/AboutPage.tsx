@@ -142,7 +142,7 @@ const AboutPage = () => {
         >
           <div style={{ flex: 1 }}>
             <img
-              src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage1.jpg"
+              src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage1.jpg?x-oss-process=image/quality,q_85"
               alt="223"
               style={{ width: "100%", maxWidth: "573px" }}
             />

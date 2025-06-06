@@ -1,10 +1,46 @@
 import React, { useState, useEffect } from "react";
 import "./HomePage.css"; // 引入自定义样式
+
+// 增强图片组件，支持加载失败时使用原始URL重试
+const EnhancedImage = ({ primarySrc, fallbackSrc, alt, className, style }) => {
+  const [src, setSrc] = useState(primarySrc);
+  const [errorOccurred, setErrorOccurred] = useState(false);
+
+  useEffect(() => {
+    setSrc(primarySrc);
+    setErrorOccurred(false);
+  }, [primarySrc]);
+
+  const handleError = () => {
+    // 如果有备用URL且未使用过，则切换为备用URL
+    if (!errorOccurred && fallbackSrc && fallbackSrc !== primarySrc) {
+      setSrc(fallbackSrc);
+      setErrorOccurred(true);
+    }
+  };
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className={className}
+      style={style}
+      onError={handleError}
+    />
+  );
+};
+
 const HomePage = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [photos, setPhotos] = useState<
-    { id: number; url: string; description: string; type: number }[]
+    {
+      id: number;
+      url: string;
+      description: string;
+      type: number;
+      originalUrl: string;
+    }[]
   >([]); // 定义 photos 状态
   const purchase = 0;
 
@@ -18,17 +54,26 @@ const HomePage = () => {
         throw new Error(`请求失败: ${response.status}`);
       }
       const result = await response.json();
+
       setPhotos(
-        result.data.map((photo) => ({
-          id: photo.id,
-          url: photo.url, // 后端返回的是 "url"
-          description: photo.description,
-          type: photo.type,
-        }))
+        result.data.map((photo) => {
+          // 保留原始URL用于回退
+          const originalUrl = photo.url;
+          // 创建带质量参数的URL
+          const imageUrl = new URL(photo.url);
+          imageUrl.searchParams.set("x-oss-process", "image/quality,q_85");
+
+          return {
+            id: photo.id,
+            url: imageUrl.toString(), // 显示用的URL（带质量参数）
+            originalUrl: originalUrl, // 原始URL用于加载失败时回退
+            description: photo.description,
+            type: photo.type,
+          };
+        })
       );
     } catch (error) {
       console.error("获取照片失败:", error);
-      // 可以根据需要处理错误（例如显示错误消息）
     } finally {
       setLoading(false);
     }
@@ -125,8 +170,9 @@ const HomePage = () => {
           <div className="image-card" style={{ flex: 1 }}>
             <div className="image-container">
               <a href="/about">
-                <img
-                  src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage1.jpg"
+                <EnhancedImage
+                  primarySrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage1.jpg"
+                  fallbackSrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage1.jpg" // 静态图片使用相同URL
                   alt="223"
                 />
               </a>
@@ -158,8 +204,9 @@ const HomePage = () => {
           <div className="image-card" style={{ flex: 1 }}>
             <div className="image-container">
               <a href="https://www.jjjason.com/lightroom">
-                <img
-                  src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage2.png"
+                <EnhancedImage
+                  primarySrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage2.png"
+                  fallbackSrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage2.png"
                   alt="lightroom"
                 />
               </a>
@@ -179,8 +226,9 @@ const HomePage = () => {
           <div className="image-card" style={{ flex: 1 }}>
             <div className="image-container">
               <a href="https://www.ysjf.com/material">
-                <img
-                  src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage3.png"
+                <EnhancedImage
+                  primarySrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage3.png"
+                  fallbackSrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/homeimage3.png"
                   alt="3"
                 />
               </a>
@@ -237,8 +285,9 @@ const HomePage = () => {
                       borderRadius: "10px",
                     }}
                   >
-                    <img
-                      src={photo.url}
+                    <EnhancedImage
+                      primarySrc={photo.url}
+                      fallbackSrc={photo.originalUrl}
                       alt={`Photo ${photo.id}`}
                       style={{
                         width: "100%",
@@ -301,10 +350,11 @@ https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/poster.jpg"
                   href="https://space.bilibili.com/1663704071?spm_id_from=333.1007.0.0"
                   style={{ display: "block" }}
                 >
-                  <img
-                    className="iconstyle"
-                    src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/bilibili.png"
+                  <EnhancedImage
+                    primarySrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/bilibili.png"
+                    fallbackSrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/bilibili.png"
                     alt="bilibili"
+                    className="iconstyle"
                   />
                 </a>
                 {/* github 图标 */}
@@ -312,15 +362,11 @@ https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/poster.jpg"
                   href="https://github.com/223nobody"
                   style={{ display: "block" }}
                 >
-                  <img
-                    className="iconstyle"
-                    style={{
-                      backgroundColor: "#fff",
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                    src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/github.png"
+                  <EnhancedImage
+                    primarySrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/github.png"
+                    fallbackSrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/github.png"
                     alt="github"
+                    className="iconstyle"
                   />
                 </a>
                 {/* ins 图标 */}
@@ -328,19 +374,21 @@ https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/poster.jpg"
                   href="https://www.instagram.com"
                   style={{ display: "block" }}
                 >
-                  <img
-                    className="iconstyle"
-                    src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/instagram.png"
+                  <EnhancedImage
+                    primarySrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/instagram.png"
+                    fallbackSrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/instagram.png"
                     alt="instagram"
+                    className="iconstyle"
                   />
                 </a>
 
                 {/* YouTube 图标 */}
                 <a href="https://youtube.com" style={{ display: "block" }}>
-                  <img
-                    className="iconstyle"
-                    src="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/youtube.png"
+                  <EnhancedImage
+                    primarySrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/youtube.png"
+                    fallbackSrc="https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/public/youtube.png"
                     alt="youtube"
+                    className="iconstyle"
                   />
                 </a>
               </div>

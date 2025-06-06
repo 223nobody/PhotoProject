@@ -16,19 +16,19 @@ const WorkPage = () => {
   const photos1 = [
     {
       id: 1,
-      url: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/masterpiece/2025%E6%98%A5%E8%8A%82/R0013958.jpg",
+      url: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/masterpiece/2025%E6%98%A5%E8%8A%82/R0013958.jpg?x-oss-process=image/quality,q_85",
       description: "25chunjie",
       type: "2",
     },
     {
       id: 2,
-      url: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/masterpiece/24-10-15/R0013766.jpg",
+      url: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/masterpiece/24-10-15/R0013766.jpg?x-oss-process=image/quality,q_85",
       description: "daily",
       type: "2",
     },
     {
       id: 3,
-      url: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/masterpiece/%E6%AD%A6%E5%BD%93/R0013695.jpg",
+      url: "https://photoproject.oss-cn-wuhan-lr.aliyuncs.com/masterpiece/%E6%AD%A6%E5%BD%93/R0013695.jpg?x-oss-process=image/quality,q_85",
       description: "wudang",
       type: "2",
     },
@@ -44,17 +44,22 @@ const WorkPage = () => {
         throw new Error(`请求失败: ${response.status}`);
       }
       const result = await response.json();
+
       setPhotos(
-        result.data.map((photo) => ({
-          id: photo.id,
-          url: photo.url, // 后端返回的是 "url"
-          description: photo.description,
-          type: photo.type,
-        }))
+        result.data.map((photo) => {
+          const imageUrl = new URL(photo.url);
+          imageUrl.searchParams.set("x-oss-process", "image/quality,q_85");
+
+          return {
+            id: photo.id,
+            url: imageUrl.toString(),
+            description: photo.description,
+            type: photo.type,
+          };
+        })
       );
     } catch (error) {
       console.error("获取照片失败:", error);
-      // 可以根据需要处理错误（例如显示错误消息）
     } finally {
       setLoading(false);
     }
